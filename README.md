@@ -4,7 +4,16 @@ Submit freeform feedback; an AI model extracts a structured, validated `Feedback
 
 ## Run locally
 
-_Steps added once the app is scaffolded._
+Requires Node 24+ and pnpm 10.
+
+```sh
+pnpm install      # also points git at .githooks/ (pre-commit: typecheck + tests)
+cp .env.example .env
+pnpm typecheck
+pnpm test
+```
+
+_Server and dashboard commands added as they land._
 
 ## Configuration
 

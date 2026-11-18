@@ -1,0 +1,5 @@
+#!/bin/sh
+# Typecheck and tests must pass before every commit (see AGENTS.md).
+set -e
+pnpm typecheck
+pnpm test
