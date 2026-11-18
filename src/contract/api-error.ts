@@ -5,6 +5,7 @@ export const ErrorCodeSchema = z.enum([
   "NOT_FOUND",
   "EXTRACTION_INVALID",
   "MODEL_UNAVAILABLE",
+  "INTERNAL_ERROR",
 ]);
 export type ErrorCode = z.infer<typeof ErrorCodeSchema>;
 

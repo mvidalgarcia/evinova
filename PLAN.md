@@ -25,6 +25,8 @@ Freeform feedback in → an AI call extracts structured content → Zod-validate
   | `GET`  | `/api/feedback`     | `200` + records | none                                                                   |
   | `GET`  | `/api/feedback/:id` | `200` + record  | `404 NOT_FOUND`                                                        |
 
+  Any route: `500 INTERNAL_ERROR` for unexpected failures; unknown routes get `404 NOT_FOUND`.
+
 - **Dashboard** (React + shadcn/ui): submit form, records table, counts by category and severity.
 - **Tests**: the `.feature` files below, run with Vitest.
 - **IaC** (CDK, synth only): Lambda + API Gateway, S3 + CloudFront, Secrets Manager.
