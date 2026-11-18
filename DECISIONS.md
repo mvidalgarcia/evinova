@@ -49,9 +49,11 @@ Key choices and why. Scope and acceptance criteria are in [PLAN.md](PLAN.md).
 - Only `LlmClient.complete(prompt) → string` is swapped. Faking the whole extractor would let tests skip the prompt, JSON parsing, Zod gate and retry, which are exactly what they must exercise.
 - Offline runs use a canned client returning one valid response. It is opt-in (`LLM_PROVIDER=fake`) with a startup warning, never a silent fallback: a misconfigured deployment must fail at startup, not quietly store made-up records.
 
-**Tests: Vitest running the `.feature` files**
+**Tests: Vitest running the `.feature` files with `@amiceli/vitest-cucumber`** (over `quickpickle`)
 
 - The Gherkin in PLAN.md is executed as written, inside the same runner as everything else, so tests can't drift from the spec.
+- Typed: each scenario is plain TypeScript with typed state and example values, and it fails if code and `.feature` disagree on a scenario or step.
+- More recent activity (a release this month vs. last May; it declares Vitest 5 support) and fewer dependencies (4 vs. 11, with no image-diff tooling).
 
 **IaC: CDK, Lambda + API Gateway + S3/CloudFront**
 
