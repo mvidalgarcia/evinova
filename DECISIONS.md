@@ -52,7 +52,7 @@ Key choices and why. Scope and acceptance criteria are in [PLAN.md](PLAN.md).
 **Tests: Vitest running the `.feature` files with `@amiceli/vitest-cucumber`** (over `quickpickle`)
 
 - The Gherkin in PLAN.md is executed as written, inside the same runner as everything else, so tests can't drift from the spec.
-- Typed: each scenario is plain TypeScript with typed state and example values, and it fails if code and `.feature` disagree on a scenario or step.
+- Typed: each scenario is plain TypeScript with typed per-scenario state (Outline example values are untyped and narrowed in the test), and it fails if code and `.feature` disagree on a scenario or step.
 - More recent activity (a release this month vs. last May; it declares Vitest 5 support) and fewer dependencies (4 vs. 11, with no image-diff tooling).
 
 **IaC: CDK, Lambda + API Gateway + S3/CloudFront**
