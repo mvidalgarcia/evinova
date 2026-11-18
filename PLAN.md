@@ -47,7 +47,7 @@ Freeform feedback in → an AI call extracts structured content → Zod-validate
 
 ## Acceptance criteria
 
-Each test is named after the scenario it implements. The scenarios of both features are committed failing before the implementation (test-first).
+Each test is named after the scenario it implements. The submit and invalid-output scenarios are committed failing before the implementation (test-first).
 
 ```gherkin
 Feature: Submit feedback
@@ -81,6 +81,24 @@ Feature: The model returns output that does not satisfy the contract
     When I submit valid feedback
     Then the response status is 201
     And the model was called 2 times
+```
+
+```gherkin
+Feature: The model is unavailable
+
+  Scenario Outline: An unavailable model is not retried and nothing is stored
+    Given the model provider fails with <failure>
+    When I submit valid feedback
+    Then the response status is 503 with error code "MODEL_UNAVAILABLE"
+    And the model was called 1 time
+    And no record is stored
+
+    Examples:
+      | failure         |
+      | a timeout       |
+      | a 429 response  |
+      | a 500 response  |
+      | a network error |
 ```
 
 ## Order of work
