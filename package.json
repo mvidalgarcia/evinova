@@ -10,7 +10,8 @@
   "scripts": {
     "prepare": "git config core.hooksPath .githooks",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "dev:api": "tsx watch --env-file-if-exists=.env src/server/dev.ts"
   },
   "devDependencies": {
     "@amiceli/vitest-cucumber": "8.0.0",
