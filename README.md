@@ -11,12 +11,15 @@ pnpm install      # also points git at .githooks/ (pre-commit: typecheck + tests
 cp .env.example .env
 pnpm typecheck
 pnpm test
-pnpm dev:api      # API on http://localhost:8787, reloads on save; reads .env
-pnpm dev:web      # form on http://localhost:5173, dashboard on /dashboard; forwards /api/ to the API (run both)
+pnpm dev          # runs dev:api and dev:web together, output prefixed per script
 pnpm seed         # submits 25 invented feedbacks to the running API
 ```
 
-Without a key, `LLM_PROVIDER=fake pnpm dev:api` runs offline. With `LLM_PROVIDER=openai` and no `LLM_API_KEY`, the server refuses to start.
+- `pnpm dev:api`: API on http://localhost:8787, reloads on save, reads `.env`, logs each request.
+- `pnpm dev:web`: form on http://localhost:5173, dashboard on `/dashboard`; forwards `/api/` to the API.
+
+> [!NOTE]
+> Without a key, `LLM_PROVIDER=fake pnpm dev` runs offline. With `LLM_PROVIDER=openai` and no `LLM_API_KEY`, the server refuses to start.
 
 
 ## Configuration
