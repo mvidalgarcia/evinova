@@ -5,7 +5,7 @@
 - **Invalid-model-output gate:** every reply goes through JSON parsing and the Zod `Extraction` schema. Unknown keys are stripped, so a model-supplied `id` or `status` never reaches a record. One repair retry with the Zod errors, then `502 EXTRACTION_INVALID` and nothing stored: at most two model calls per submission.
 - **Model outages:** timeouts (15 s), `429`, `5xx` and network errors return `503 MODEL_UNAVAILABLE`, never retried (SDK retries off too), so we don't add load to a struggling provider. Other provider errors (bad key, unknown model) are our misconfiguration and stay `500`.
 - **Configuration:** env is validated at startup; a missing API key fails fast, and the offline fake is opt-in only.
-- **Input validation:** request bodies, model output and responses are all checked against the contract. The feedback is fenced as data in the prompt.
+- **Input validation:** request bodies, model output and responses are all checked against the contract, and the UI validates what it receives again (client-side length checks share the contract's limits). The feedback is fenced as data in the prompt.
 - **Error paths:** every error leaves in one shape, `{ error: { code, message, details? } }`.
 
 **Tightened after it first worked:**

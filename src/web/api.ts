@@ -1,5 +1,7 @@
 import { hc } from "hono/client";
+import { z } from "zod";
 import { ApiErrorSchema, type ErrorCode } from "../contract/api-error";
+import { type FeedbackRecord, FeedbackRecordSchema } from "../contract/feedback";
 import type { AppType } from "../server/app";
 
 // Typed from the server routes; type-only import, so no server code reaches the bundle.
@@ -31,4 +33,21 @@ export async function submitFeedback(text: string): Promise<SubmitResult> {
   const body: unknown = await response.json().catch(() => null);
   const parsed = ApiErrorSchema.safeParse(body);
   return { ok: false, message: parsed.success ? ERROR_MESSAGES[parsed.data.error.code] : UNKNOWN_ERROR };
+}
+
+export type ListResult = { ok: true; records: FeedbackRecord[] } | { ok: false; message: string };
+
+export async function listFeedback(): Promise<ListResult> {
+  let response: Response;
+  try {
+    response = await client.api.feedback.$get();
+  } catch {
+    return { ok: false, message: NETWORK_ERROR };
+  }
+  const body: unknown = await response.json().catch(() => null);
+  // Records are validated on the way in too, so the UI never renders an off-contract record.
+  const records = z.array(FeedbackRecordSchema).safeParse(body);
+  if (response.ok && records.success) return { ok: true, records: records.data };
+  const error = ApiErrorSchema.safeParse(body);
+  return { ok: false, message: error.success ? ERROR_MESSAGES[error.data.error.code] : UNKNOWN_ERROR };
 }
