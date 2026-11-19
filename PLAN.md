@@ -14,7 +14,7 @@ Freeform feedback in → an AI call extracts structured content → Zod-validate
     - `severity`: `low | medium | high`
     - `summary`, `suggestedAction`: non-empty strings, ≤ 200 chars
   - `FeedbackRecord`: `Extraction` + server-owned `id` (`fb_` + ULID), `submittedAt` (ISO 8601 UTC), `status` (`new | triaged | resolved`, starts as `new`), and the original `text`.
-- **AI extraction**: `openai` SDK against an OpenAI-compatible endpoint (default: Groq free tier, `openai/gpt-oss-20b`; fallback `qwen/qwen3.8-27b` via `LLM_MODEL`). Strict structured outputs with the JSON Schema generated from `Extraction`. Scripted fake for tests; opt-in canned fake (`LLM_PROVIDER=fake`) offline.
+- **AI extraction**: `openai` SDK against an OpenAI-compatible endpoint (default: Groq free tier, `openai/gpt-oss-20b`; fallback `qwen/qwen3.8-27b` via `LLM_MODEL`). Strict structured outputs with the JSON Schema generated from `Extraction`. Scripted fake for tests; opt-in offline fake (`LLM_PROVIDER=fake`).
 - **Invalid model output**: the Zod gate, then one repair retry with the Zod errors, then `502 EXTRACTION_INVALID`, nothing stored.
 - **Model unavailable** (timeout, `429`, `5xx`, network error): `503 MODEL_UNAVAILABLE`, nothing stored, no retry. The SDK's built-in retries are off (`maxRetries: 0`), so our code owns the whole retry policy.
 - **API** (Hono), errors as `{ error: { code, message, details? } }`:

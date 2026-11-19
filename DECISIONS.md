@@ -47,7 +47,7 @@ Key choices and why. Scope and acceptance criteria are in [PLAN.md](PLAN.md).
 **Test doubles: fake the model's raw response, not the extraction**
 
 - Only `LlmClient.complete(prompt) → string` is swapped. Faking the whole extractor would let tests skip the prompt, JSON parsing, Zod gate and retry, which are exactly what they must exercise.
-- Offline runs use a canned client returning one valid response. It is opt-in (`LLM_PROVIDER=fake`) with a startup warning, never a silent fallback: a misconfigured deployment must fail at startup, not quietly store made-up records.
+- Offline runs use a fake client returning one fixed valid response. It is opt-in (`LLM_PROVIDER=fake`) with a startup warning, never a silent fallback: a misconfigured deployment must fail at startup, not quietly store made-up records.
 
 **Tests: Vitest running the `.feature` files with `@amiceli/vitest-cucumber`** (over `quickpickle`)
 

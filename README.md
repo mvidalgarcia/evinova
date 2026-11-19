@@ -26,8 +26,8 @@ _Server and dashboard commands added as they land._
 
 ## Stubbed parts
 
-- **Fake model**: with `LLM_PROVIDER=fake`, every submission gets the same canned model response instead of a real one. Validation and record creation still run for real. A warning is logged at startup.
-- **Tests**: use a scripted fake model to simulate valid, invalid and retry responses; they never call a real model.
+- **Fake model**: with `LLM_PROVIDER=fake`, every submission gets the same fixed model response instead of a real one. Validation and record creation still run for real. A warning is logged at startup.
+- **Tests**: use a scripted fake model to simulate valid, invalid and retry responses, and a fake `fetch` to simulate provider outages; they never call a real model.
 - **Infrastructure**: the CDK stack is synthesised only, never deployed.
 
 ## Docs
