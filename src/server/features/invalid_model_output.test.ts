@@ -3,6 +3,7 @@ import { expect } from "vitest";
 import { ApiErrorSchema } from "../../contract/api-error";
 import { createApp } from "../app";
 import {
+  exampleFixture,
   listRecords,
   scriptedLlm,
   submitFeedback,
@@ -32,10 +33,7 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
       let response: Response;
 
       Given("the model returns <output> on every attempt", () => {
-        const name: unknown = variables.output;
-        const output = typeof name === "string" ? INVALID_OUTPUTS[name] : undefined;
-        if (output === undefined) throw new Error(`No fixture for output ${String(name)}`);
-        llm = scriptedLlm([output]);
+        llm = scriptedLlm([exampleFixture(INVALID_OUTPUTS, variables.output)]);
         app = createApp({ llm: llm.client });
       });
 

@@ -50,3 +50,13 @@ export async function listRecords(app: App) {
   const response = await app.request("/api/feedback");
   return z.array(FeedbackRecordSchema).parse(await response.json());
 }
+
+/**
+ * vitest-cucumber types Scenario Outline example values as `any`. Take the value
+ * as `unknown` and return its fixture, typed, failing loudly on an unknown value.
+ */
+export function exampleFixture<T>(fixtures: Readonly<Record<string, T>>, value: unknown): T {
+  const fixture = typeof value === "string" ? fixtures[value] : undefined;
+  if (fixture === undefined) throw new Error(`No fixture for example value ${String(value)}`);
+  return fixture;
+}
