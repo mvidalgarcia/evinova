@@ -23,7 +23,7 @@ export function createLlmClientFromEnv(env: NodeJS.ProcessEnv = process.env): Ll
   }
   const config = parsed.data;
   if (config.LLM_PROVIDER === "fake") {
-    console.warn("LLM_PROVIDER=fake: every submission gets the same fixed extraction.");
+    console.warn("LLM_PROVIDER=fake: extractions come from keyword rules, not a model.");
     return createFakeClient();
   }
   return createOpenAiClient({
