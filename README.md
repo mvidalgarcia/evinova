@@ -13,6 +13,7 @@ pnpm typecheck
 pnpm test
 pnpm dev:api      # API on http://localhost:8787, reloads on save; reads .env
 pnpm dev:web      # form on http://localhost:5173, dashboard on /dashboard; forwards /api/ to the API (run both)
+pnpm seed         # submits 25 invented feedbacks to the running API
 ```
 
 Without a key, `LLM_PROVIDER=fake pnpm dev:api` runs offline. With `LLM_PROVIDER=openai` and no `LLM_API_KEY`, the server refuses to start.
