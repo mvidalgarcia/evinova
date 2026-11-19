@@ -12,11 +12,11 @@ cp .env.example .env
 pnpm typecheck
 pnpm test
 pnpm dev:api      # API on http://localhost:8787, reloads on save; reads .env
+pnpm dev:web      # UI on http://localhost:5173, forwards /api/ to the API (run both)
 ```
 
 Without a key, `LLM_PROVIDER=fake pnpm dev:api` runs offline. With `LLM_PROVIDER=openai` and no `LLM_API_KEY`, the server refuses to start.
 
-_Dashboard commands added when it lands._
 
 ## Configuration
 

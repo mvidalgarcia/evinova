@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
     "target": "ES2023",
-    "lib": ["ES2023"],
-    "types": ["node"],
+    "lib": [
+      "ES2023"
+    ],
+    "types": [
+      "node"
+    ],
     "module": "preserve",
     "moduleResolution": "bundler",
     "noEmit": true,
@@ -14,5 +18,12 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src", "vitest.config.ts"]
+  "include": [
+    "src",
+    "vitest.config.ts",
+    "vite.config.ts"
+  ],
+  "exclude": [
+    "src/web"
+  ]
 }
