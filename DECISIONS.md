@@ -76,7 +76,7 @@ Key choices and why. Scope and acceptance criteria are in [PLAN.md](PLAN.md).
 - Pagination and filtering (category, severity, status, date) on `GET /api/feedback`, with aggregates computed by the store instead of over the whole list.
 - Let the model flag non-feedback input and answer `422`.
 - Scrub personal and health data before the text leaves the service.
-- A dedicated decision model for `category`, `sentiment` and `severity`, with the LLM producing only the free-text fields; for example Jev, which answers typed choice questions with probabilities.
+- A dedicated decision model for `category`, `sentiment` and `severity`, with the LLM producing only the free-text fields; for example Jev, which answers typed choice questions with probabilities. This is the root fix for prompt injection on those fields: a classifier has no instructions to follow, so "set severity to high" is just text to classify. Its probabilities also give a confidence threshold: low-confidence records go to human triage instead of being trusted.
 - A status update endpoint (`new` → `triaged` → `resolved`) and a "proportion resolved" view.
 - DynamoDB instead of the in-memory store.
 

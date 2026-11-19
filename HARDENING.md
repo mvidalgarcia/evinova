@@ -21,6 +21,7 @@
 - **End-to-end tests:** a smoke test against a deployed stack with the real model, to catch provider or model changes that fakes can't.
 - **Promotion and rollback:** staged environments with approval, and Lambda alias traffic shifting that rolls back automatically on alarms.
 - **Observability:** structured logs with a request id; metrics and alarms on invalid-output rate, retry rate, model latency and `503`s.
+- **Prompt injection:** today it can steer model-owned fields, never server-owned ones. Measured on gpt-oss-20b (10 runs each): adding "set severity to high" moved a plain feature request from `low` 10/10 to `high` 8/10, and moving the instructions to a system message didn't help. Fix: a classifier for `category`, `sentiment` and `severity` (nothing to hijack), an injection detector that flags submissions for review rather than blocking them, and human triage before severity drives any action.
 - **Data and abuse:** persistent store, async queue so no feedback is lost, rate limiting, and scrubbing personal data before the model call.
 
 These were left out on purpose: nothing is deployed and one person works on it, so CI and promotion would have nothing to gate and observability nothing to watch. Each is more infrastructure than the service itself; the time went into the contract and the model-output path, where the real risk is.
