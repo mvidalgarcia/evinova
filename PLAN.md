@@ -6,14 +6,14 @@ Freeform feedback in → an AI call extracts structured content → Zod-validate
 
 **In**
 
-- **Contract** (Zod, shared by API and UI), validated at every boundary: request body, model output, API response.
+- **Contract** (Zod, shared by API and UI), validated at every boundary: request body, model output, API response. Written before the code; once implemented, `src/contract/feedback.ts` is authoritative.
   - `FeedbackInput`: `{ text }`, trimmed, 10–2000 chars.
   - `Extraction` (model-owned):
     - `category`: `bug | feature_request | praise | other`
     - `sentiment`: `positive | neutral | negative`
     - `severity`: `low | medium | high`
     - `summary`, `suggestedAction`: non-empty strings, ≤ 200 chars
-  - `FeedbackRecord`: `Extraction` + server-owned `id` (`fb_` + ULID), `submittedAt` (ISO 8601 UTC), `status` (`new | triaged | resolved`, starts as `new`), and the original `text`.
+  - `FeedbackRecord`: `Extraction` + server-owned `id` (`fb_` + ULID), `submittedAt` (ISO 8601 UTC), `status` (`new | triaged | resolved`, starts as `new`), and the original `text` (kept for audit and reprocessing).
 - **AI extraction**: `openai` SDK against an OpenAI-compatible endpoint (default: Groq free tier, `openai/gpt-oss-20b`; fallback `qwen/qwen3.8-27b` via `LLM_MODEL`). Strict structured outputs with the JSON Schema generated from `Extraction`. Scripted fake for tests; opt-in offline fake (`LLM_PROVIDER=fake`).
 - **Invalid model output**: the Zod gate, then one repair retry with the Zod errors, then `502 EXTRACTION_INVALID`, nothing stored.
 - **Model unavailable** (timeout, `429`, `5xx`, network error): `503 MODEL_UNAVAILABLE`, nothing stored, no retry. The SDK's built-in retries are off (`maxRetries: 0`), so our code owns the whole retry policy.
@@ -36,14 +36,10 @@ Freeform feedback in → an AI call extracts structured content → Zod-validate
 
 ## Risks
 
-| Risk                                                | Mitigation in scope                                                                                                |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Model output is malformed or off-contract           | Strict structured outputs, Zod gate, one retry, `502`                                                              |
-| Model slow, unavailable or retired                  | Timeout, `503 MODEL_UNAVAILABLE`; provider and model set by env (free tier is a demo choice, not a production one) |
-| Bursts of concurrent submissions                    | Timeout and capped retry only; queue and pagination are future work                                                |
-| Prompt injection in the feedback                    | Text sent as data; output bounded by `Extraction`; server-owned fields never from the model                        |
-| Gibberish or spam input                             | Stored as `other`; documented                                                                                      |
-| Personal or health data sent to a third-party model | Documented; scrubbing before the call is future work                                                               |
+- **Malformed model output:** strict structured outputs, Zod gate, one repair retry, then `502`.
+- **Model slow, unavailable or retired:** timeout and `503`, no retry; provider and model set by env.
+- **Prompt injection:** the text is sent as data and server-owned fields never come from the model, but model-owned fields such as `severity` can still be steered. Accepted; see [HARDENING.md](HARDENING.md).
+- **Bursts, gibberish and personal data:** no queue, gibberish is stored as `other`, and text goes to a third-party model unscrubbed. Accepted; future work.
 
 ## Acceptance criteria
 
