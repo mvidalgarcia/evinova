@@ -21,6 +21,17 @@ pnpm seed         # submits 25 invented feedbacks to the running API
 > [!NOTE]
 > Without a key, `LLM_PROVIDER=fake pnpm dev` runs offline. With `LLM_PROVIDER=openai` and no `LLM_API_KEY`, the server refuses to start.
 
+### Get a Groq API key
+
+The key is free and needs no credit card.
+
+1. Sign up or log in at [console.groq.com](https://console.groq.com).
+2. Open **API Keys** in the sidebar (or go to [console.groq.com/keys](https://console.groq.com/keys)).
+3. Click **Create API Key**, give it a name (e.g. `feedback-intake`) and submit.
+4. Copy the key straight away: Groq shows it only once.
+5. Paste it into `.env` as `LLM_API_KEY=<your key>`, then restart `pnpm dev`.
+
+`.env` is git-ignored, so the key stays out of the repo.
 
 ## Configuration
 
