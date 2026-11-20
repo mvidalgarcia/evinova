@@ -12,7 +12,9 @@ const app = createApp({ llm: createLlmClientFromEnv() });
 // Request logging for local runs only; tests and the Lambda handler stay quiet.
 const root = new Hono();
 root.use(logger());
-root.route("/", app);
+// Forward the raw request instead of mounting with `route()`, which would drop the app's own
+// not-found and error handlers and answer unknown routes with Hono's plain-text 404.
+root.all("*", (c) => app.fetch(c.req.raw));
 
 serve({ fetch: root.fetch, port: PORT }, ({ port }) => {
   console.log(`API listening on http://localhost:${port}`);
