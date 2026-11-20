@@ -9,13 +9,14 @@
   },
   "scripts": {
     "prepare": "git config core.hooksPath .githooks",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p src/web",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p src/web && tsc --noEmit -p infra",
     "test": "vitest run --passWithNoTests",
     "dev": "pnpm run --parallel \"/^dev:/\"",
     "dev:api": "tsx watch --env-file-if-exists=.env src/server/dev.ts",
     "dev:web": "vite",
     "build:web": "vite build",
-    "seed": "tsx scripts/seed.ts"
+    "seed": "tsx scripts/seed.ts",
+    "synth": "pnpm build:web && pnpm --filter feedback-intake-infra synth"
   },
   "devDependencies": {
     "@amiceli/vitest-cucumber": "8.0.0",

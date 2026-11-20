@@ -30,12 +30,23 @@ pnpm seed         # submits 25 invented feedbacks to the running API
 | `LLM_BASE_URL` | OpenAI-compatible endpoint (default: `https://api.groq.com/openai/v1`) |
 | `LLM_MODEL` | Model id (default: `openai/gpt-oss-20b`; fallback: `qwen/qwen3.8-27b`) |
 | `LLM_API_KEY` | API key, free at [console.groq.com](https://console.groq.com). Required unless `LLM_PROVIDER=fake`; the app refuses to start without it |
+| `LLM_API_KEY_SECRET_ID` | AWS only, set by the CDK stack: the Secrets Manager secret the Lambda reads the key from, instead of `LLM_API_KEY`. Not used locally |
+
+## Infrastructure (AWS CDK)
+
+`pnpm synth` builds the UI and synthesises one stack per environment (`FeedbackIntake-dev`, `FeedbackIntake-prod`) into `infra/cdk.out`. No AWS account is needed. What a stack contains:
+
+- CloudFront serves the UI from a private S3 bucket and forwards `/api/*` to an API Gateway HTTP API, so browser and API share one domain.
+- The API is a Lambda (`src/server/lambda.ts`) behind a `live` alias. CodeDeploy shifts traffic to new versions (prod: 10% for 5 minutes) and rolls back if the alias's error alarm fires.
+- The model API key lives in Secrets Manager. The stack creates it with a random placeholder; the Lambda reads it at cold start, so it never appears in the template or the function's environment.
+
+To deploy (not done here): set `DEV_ACCOUNT_ID`/`PROD_ACCOUNT_ID`, run `cdk bootstrap` and `cdk deploy` from `infra/`, then store the key with `aws secretsmanager put-secret-value`, using the `ApiKeySecretName` output.
 
 ## Stubbed parts
 
 - **Fake model**: with `LLM_PROVIDER=fake`, no model is called; keyword rules pick a plausible category, sentiment and severity, and the summary is the feedback itself. Validation and record creation still run for real. A warning is logged at startup.
 - **Tests**: use a scripted fake model to simulate valid, invalid and retry responses, and a fake `fetch` to simulate provider outages; they never call a real model.
-- **Infrastructure**: the CDK stack is synthesised only, never deployed.
+- **Infrastructure**: the CDK stacks are synthesised only, never deployed.
 
 ## Docs
 

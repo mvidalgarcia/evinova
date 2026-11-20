@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    // aws-cdk-lib's typings are not written for it (e.g. a Bucket is not assignable to IBucket).
+    "exactOptionalPropertyTypes": false
+  },
+  "include": ["."],
+  "exclude": ["cdk.out", "node_modules"]
+}

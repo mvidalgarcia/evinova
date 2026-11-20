@@ -58,6 +58,10 @@ Key choices and why. Scope and acceptance criteria are in [PLAN.md](PLAN.md).
 **IaC: CDK, Lambda + API Gateway + S3/CloudFront**
 
 - Lambda keeps the service container-free (containers are out of scope) and needs no adapter beyond Hono's own.
+- One CloudFront domain: `/api/*` goes to the HTTP API, everything else to S3. Same shape as the dev proxy, so no CORS.
+- One stack per environment, each in its own account. Promotion deploys the same synthesised template to the next account.
+- Rollback: prod shifts 10% of traffic to a new version for 5 minutes and rolls back if the alias reports Lambda errors (crashes, timeouts, failed cold starts). Not on `5xx` responses: a model outage returns `503` and would roll back a good release.
+- The model key is read from Secrets Manager with the AWS SDK at cold start: never in the template or the function's environment. Over the Parameters and Secrets extension because plain SDK code is easier to read and debug; the extension would add cached refresh after rotation.
 
 **Schema**
 
@@ -68,7 +72,7 @@ Key choices and why. Scope and acceptance criteria are in [PLAN.md](PLAN.md).
 ## Known limitations
 
 - The in-memory store is per process, so per Lambda instance in AWS: records are lost on restart and not shared between instances. The store sits behind a repository interface for the swap to DynamoDB.
-- _More to fill during execute and harden._
+- API Gateway cuts requests off at 30 s; a slow first reply followed by a repair retry can come close (two 15 s calls).
 
 ## With more time
 
