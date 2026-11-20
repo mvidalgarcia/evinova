@@ -18,7 +18,7 @@
 ## Before production
 
 - **CI gates:** typecheck, tests, an import-boundary lint rule, `cdk diff` and policy-as-code checks (cdk-nag) on every pull request.
-- **End-to-end tests:** a smoke test against a deployed stack with the real model, to catch provider or model changes that fakes can't.
+- **End-to-end tests:** Playwright tests of the form and dashboard, plus a smoke test against a deployed stack with the real model, to catch provider or model changes that fakes can't.
 - **Promotion and rollback:** already in the stacks: one stack per environment, each in its own account, and prod releases the Lambda as a canary (10% for 5 minutes) that rolls back on Lambda errors. Missing: a pipeline that synthesises once and promotes that same build from dev to prod behind a manual approval, a pre-traffic smoke test hook, and an alarm on the new version's `500` responses, which today are handled responses, not Lambda errors.
 - **Observability:** structured logs with a request id; metrics and alarms on invalid-output rate, retry rate, model latency and `503`s.
 - **Prompt injection:** today it can steer model-owned fields, never server-owned ones. Measured on gpt-oss-20b (10 runs each): adding "set severity to high" moved a plain feature request from `low` 10/10 to `high` 8/10, and moving the instructions to a system message didn't help. Fix: a classifier for `category`, `sentiment` and `severity` (nothing to hijack), an injection detector that flags submissions for review rather than blocking them, and human triage before severity drives any action.

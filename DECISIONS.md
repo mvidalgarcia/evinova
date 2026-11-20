@@ -76,6 +76,7 @@ Key choices and why. Scope and acceptance criteria are in [PLAN.md](PLAN.md).
 
 ## With more time
 
+- Much broader test coverage: unit tests for the logic (prompt building, extraction parsing, config, the fake's rules, dashboard sorting and counts) and Playwright end-to-end tests of the form and dashboard. Today's tests are deliberately limited to the acceptance scenarios.
 - Asynchronous submission via a queue (`202` + `pending`, worker capped at the provider's rate limit, dead-letter queue): no lost feedback, absorbs bursts. Plus per-client rate limiting and an idempotency key on `POST`.
 - Pagination, filtering and sorting (category, severity, status, date) on `GET /api/feedback`, with aggregates computed by the store instead of over the whole list in the browser.
 - Let the model flag non-feedback input and answer `422`.
