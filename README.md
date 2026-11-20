@@ -63,4 +63,5 @@ To deploy (not done here): set `DEV_ACCOUNT_ID`/`PROD_ACCOUNT_ID`, run `cdk boot
 
 - [PLAN.md](PLAN.md): scope, risks, acceptance criteria
 - [DECISIONS.md](DECISIONS.md): key choices and trade-offs
+- [HARDENING.md](HARDENING.md): what makes it resilient today and what is needed before production
 - [AGENTS.md](AGENTS.md): working rules
