@@ -14,7 +14,7 @@ Key choices and why. Scope and acceptance criteria are in [PLAN.md](PLAN.md).
 **Repo layout: one app package plus a separate `infra/` package**
 
 - `src/contract`, `src/server` and `src/web` share one `package.json`, `tsconfig` and Vitest config. The contract is shared by relative import with no build step, and the dashboard's `hc` client imports the server's route types directly.
-- `infra/` has its own `package.json`, as `cdk init` creates, so the heavy CDK dependencies stay out of the app.
+- `infra/` has its own `package.json` (a pnpm workspace member), so the heavy CDK dependencies stay out of the app.
 - The risk of one package is server code (such as the `openai` SDK) leaking into the browser bundle. It's handled by convention: `web` imports only _types_ from `server` (see [AGENTS.md](AGENTS.md)). The risk is small and fails loudly: type imports are erased at build time, and the SDK refuses to run in a browser. The upgrade path is a lint rule (`@typescript-eslint/no-restricted-imports` with `allowTypeImports`).
 - Rejected: a pnpm workspace per piece. It gives the strongest boundaries, but costs four `package.json` files, project references and per-package scripts, which is too much for a service this size. I'd move to one once the contract has a second consumer or the UI gets its own team.
 
@@ -90,8 +90,8 @@ Key choices and why. Scope and acceptance criteria are in [PLAN.md](PLAN.md).
 
 - **My calls:** the initial plan draft, Hono after comparing it with Express, Groq after finding OpenCode Zen's free models restricted to its own app, qwen as the fallback model, retry once then fail, storing gibberish as-is, no PII flag, AGENTS.md as the rules file (imported by `CLAUDE.md`), the pre-commit hook, and the no-commit-without-permission rule.
 - **AI-proposed, then reviewed by me:** splitting the schema into input, extraction and record; the risk list; the Gherkin scenarios; the extra working rules.
-- **Code:** _to fill during execute._
+- **Code:** AI wrote most of it, one piece at a time. For each piece I had it interview me to refine the requirements, asked for pros and cons before choosing, and challenged its output. Calls made that way: vitest-cucumber over quickpickle, Node-only server types with a separate DOM config for the web, Hono's built-in Lambda adapter, the canary and rollback in the CDK code, reading the key from Secrets Manager with the SDK, which dashboard columns sort, and explicit code over clever code.
 
 ## Time spent
 
-_To fill at the end._
+About 5 hours, two thirds of it on the plan (scope, contract, acceptance criteria, working rules), the rest building and hardening.
